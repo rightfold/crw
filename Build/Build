@@ -1,0 +1,93 @@
+#!/bin/bash
+
+# Copyright 2017, rightfold
+#
+# This file is part of CRW.
+#
+# CRW is free software: you can redistribute it and/or modify it under the
+# terms of the GNU Affero General Public License as published by the Free
+# Software Foundation, either version 3 of the License, or (at your option) any
+# later version.
+#
+# CRW is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+# A PARTICULAR PURPOSE. See the GNU Affero General Public License for more
+# details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with CRW. If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+set -o pipefail
+
+CRWBuildDir='/tmp/CRWBuild'
+CRWBuildCmd="$1"
+CRWMainPath="$CRWBuildDir/src/CRW/Main.go"
+
+rm -rf "$CRWBuildDir"
+mkdir -p "$CRWBuildDir"
+
+mkdir -p "$CRWBuildDir/src/CRW"
+cp -R 'RT/src' "$CRWBuildDir/src/CRW/RT"
+
+function ProgramLevel {
+    cat "$1" | awk '$2 == "Level:" { print $3 }'
+}
+
+function ProgramName {
+    cat "$1" | awk '$2 == "Name:" { print $3 }'
+}
+
+for f in "${@:2}"; do
+    mkdir -p "$CRWBuildDir/src/CRW/Programs/$(ProgramLevel "$f")/$(ProgramName "$f")"
+    cp "$f" "$CRWBuildDir/src/CRW/Programs/$(ProgramLevel "$f")/$(ProgramName "$f")/Program.go"
+done
+
+(
+    mkdir -p "$(dirname "$CRWMainPath")"
+    cat <<GO
+package main
+
+import (
+    "net/http"
+    "CRW/RT/Program"
+    "CRW/RT/Web"
+GO
+    for f in "${@:2}"; do
+        echo '    "'"CRW/Programs/$(ProgramLevel "$f")/$(ProgramName "$f")"'"'
+    done
+    cat <<GO
+)
+
+func main() {
+    programs := Web.NewPrograms()
+    programs.AddProgram(
+        Program.Name{
+            Level: Program.$(ProgramLevel "$f")Level,
+            Name: "$(ProgramName "$f")",
+        },
+GO
+    for f in "${@:2}"; do
+        echo "        CRW$(ProgramLevel "$f")$(ProgramName "$f").Program,"
+    done
+    cat <<GO
+    )
+
+    execute := Web.Execute{Programs: programs}
+
+    server := http.Server{
+        Addr: ":8080",
+        Handler: &execute,
+    }
+    err := server.ListenAndServe()
+    if err != nil {
+        panic(err)
+    }
+}
+GO
+) >> "$CRWMainPath"
+
+(
+    cd "$CRWBuildDir"
+    GOPATH="$PWD" go "$CRWBuildCmd" ./...
+)
