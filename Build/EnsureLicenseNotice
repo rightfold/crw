@@ -62,5 +62,6 @@ function Main {
     done
 }
 
-Main 's/#/\/\//' $(find RT/src -name '*.go')
-Main 's/#/\/\//' $(find System -name '*.go')
+Main 's/#/\/\//' $(find RT/src Core/build -name '*.go')
+Main 's/#/--/' $(find C/{app,src,unit} -name '*.hs')
+Main 's/#/*/' $(find Core/src -name '*.crw')

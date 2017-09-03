@@ -1,0 +1,49 @@
+name: crwc
+version: 0.0.0
+
+ghc-options: >-
+  -Wall
+  -Wincomplete-uni-patterns
+  -Wincomplete-record-updates
+
+default-extensions:
+  - ApplicativeDo
+  - DataKinds
+  - DeriveFunctor
+  - DeriveGeneric
+  - FlexibleContexts
+  - FlexibleInstances
+  - FunctionalDependencies
+  - GADTs
+  - MonoLocalBinds
+  - MultiParamTypeClasses
+  - OverloadedStrings
+  - RankNTypes
+  - ScopedTypeVariables
+  - StandaloneDeriving
+  - TypeFamilies
+
+dependencies:
+  - base == 4.9.1.0
+  - deriving-compat == 0.3.6
+  - parsec == 3.1.11
+  - recursion-schemes == 5.0.2
+  - text == 1.2.2.2
+
+library:
+  source-dirs: src
+
+executables:
+  crwc:
+    source-dirs: app
+    main: CRWC.hs
+    dependencies:
+      - crwc
+
+tests:
+  unit:
+    source-dirs: unit
+    main: Spec.hs
+    dependencies:
+      - crwc
+      - hspec == 2.4.4

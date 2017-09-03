@@ -7,7 +7,7 @@ is always statically linked with custom CRW programs. The following command will
 install a binary named `/tmp/CRWBuild/bin/CRW`:
 
 ```bash
-$ Build/Build install System/Version.go
+$ Build/Build install Core/build/Version.go
 ```
 
 There is not much you can do with this software right now, but hopefully this
