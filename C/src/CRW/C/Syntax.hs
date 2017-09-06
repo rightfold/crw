@@ -30,6 +30,9 @@ module CRW.C.Syntax
 
     -- * Expressions
   , Expression (..)
+
+    -- * Types
+  , Type (..)
   ) where
 
 import Data.Eq.Deriving (deriveEq1)
@@ -43,7 +46,7 @@ import Text.Show.Deriving (deriveShow1)
 data Program e
   = View Level Text (ViewBody e)
   | Action Void
-  deriving (Eq, Functor, Show, Read)
+  deriving (Eq, Functor, Foldable, Traversable, Show, Read)
 
 data Level = SystemLevel | ApplicationLevel | UserLevel
   deriving (Eq, Show, Read)
@@ -52,20 +55,24 @@ data Level = SystemLevel | ApplicationLevel | UserLevel
 
 newtype ViewBody e =
   ViewBody [Statement e]
-  deriving (Eq, Functor, Show, Read)
+  deriving (Eq, Functor, Foldable, Traversable, Show, Read)
 
 
 
 data Statement e
   = DisplayStatement [e]
   | FlushStatement
-  deriving (Eq, Functor, Show, Read)
+  deriving (Eq, Functor, Foldable, Traversable, Show, Read)
 
 
 
 data Expression a
   = TextLiteralExpression Text
-  deriving (Eq, Functor, Show, Read)
+  deriving (Eq, Functor, Foldable, Traversable, Show, Read)
 $(deriveEq1 ''Expression)
 $(deriveShow1 ''Expression)
 $(deriveRead1 ''Expression)
+
+data Type
+  = TextType
+  deriving (Eq, Show, Read)
