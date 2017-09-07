@@ -62,7 +62,7 @@ newtype DisplayPhase e =
 
 data Statement e
   = DisplayStatement [e]
-  | FlushStatement
+  | FlushDisplayStatement
   deriving (Eq, Functor, Foldable, Traversable, Show, Read)
 
 

@@ -47,7 +47,7 @@ data Lexeme
   | AuthorizationPhaseKeyword
   | DisplayKeyword
   | DisplayPhaseKeyword
-  | FlushKeyword
+  | FlushDisplayKeyword
   | SystemKeyword
   | UserKeyword
   | ViewKeyword
@@ -73,7 +73,7 @@ keywordOrIdentifier = spaced $ do
     "AUTHORIZATION-PHASE" -> AuthorizationPhaseKeyword
     "DISPLAY" -> DisplayKeyword
     "DISPLAY-PHASE" -> DisplayPhaseKeyword
-    "FLUSH" -> FlushKeyword
+    "FLUSH-DISPLAY" -> FlushDisplayKeyword
     "SYSTEM" -> SystemKeyword
     "USER" -> UserKeyword
     "VIEW" -> ViewKeyword

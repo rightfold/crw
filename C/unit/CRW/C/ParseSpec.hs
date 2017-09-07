@@ -46,6 +46,6 @@ spec =
                (DisplayPhase [ DisplayStatement [ embed . TextLiteralExpression $ "Version"
                                                 , embed . TextLiteralExpression $ "0.0.0"
                                                 ]
-                             , FlushStatement
+                             , FlushDisplayStatement
                              ])
       result `shouldBe` expected

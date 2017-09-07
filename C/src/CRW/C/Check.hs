@@ -68,7 +68,7 @@ checkProgram (Action void) = absurd void
 checkStatement :: Statement (Mu Expression) -> Check (Statement (Cofree Expression Type))
 checkStatement (DisplayStatement arguments) =
   DisplayStatement <$> traverse checkExpression arguments
-checkStatement FlushStatement = pure FlushStatement
+checkStatement FlushDisplayStatement = pure FlushDisplayStatement
 
 checkExpression :: Mu Expression -> Check (Cofree Expression Type)
 checkExpression = project >>> traverse checkExpression >=> \case

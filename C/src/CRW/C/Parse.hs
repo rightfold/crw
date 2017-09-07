@@ -89,7 +89,7 @@ displayStatement = do
   pure $ DisplayStatement arguments
 
 flushStatement :: Parser (Statement (Mu Expression))
-flushStatement = FlushStatement <$ lexeme FlushKeyword
+flushStatement = FlushDisplayStatement <$ lexeme FlushDisplayKeyword
 
 
 
