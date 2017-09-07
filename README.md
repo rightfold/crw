@@ -2,12 +2,13 @@
 
 ## Installation
 
-First, you need Go 1.9 installed. Then you can build CRW. The CRW runtime system
-is always statically linked with custom CRW programs. The following command will
-install a binary named `/tmp/CRWBuild/bin/CRW`:
+First, you need Go and Stack installed. Then you can build CRW. The CRW runtime
+system is always statically linked with custom CRW programs. The following
+commands will install a binary named `/tmp/CRWBuild/bin/CRW`:
 
 ```bash
-$ Build/Build install Core/build/Version.go
+$ (cd C && stack build)
+$ Build/Build Core
 ```
 
 There is not much you can do with this software right now, but hopefully this

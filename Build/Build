@@ -21,7 +21,7 @@ set -e
 set -o pipefail
 
 CRWBuildDir='/tmp/CRWBuild'
-CRWBuildCmd="$1"
+CRWBuildCmd="install"
 CRWMainPath="$CRWBuildDir/src/CRW/Main.go"
 
 rm -rf "$CRWBuildDir"
@@ -38,7 +38,20 @@ function ProgramName {
     cat "$1" | awk '$2 == "Name:" { print $3 }'
 }
 
-for f in "${@:2}"; do
+CRWPrograms="$(find "$1/src" -type f -name '*.crw')"
+
+rm -rf "$1/build"
+mkdir "$1/build"
+for f in $CRWPrograms; do
+    Input="$(realpath -s "$f")"
+    Output="$1/build${f#$1/src}.go"
+    mkdir -p "$(dirname "$Output")"
+    (cd C && stack exec -- crwc "$Input") > "$Output"
+done
+
+GoPrograms="$(find "$1/build" -type f -name '*.go')"
+
+for f in $GoPrograms; do
     mkdir -p "$CRWBuildDir/src/CRW/Programs/$(ProgramLevel "$f")/$(ProgramName "$f")"
     cp "$f" "$CRWBuildDir/src/CRW/Programs/$(ProgramLevel "$f")/$(ProgramName "$f")/Program.go"
 done
@@ -53,7 +66,7 @@ import (
     "CRW/RT/Program"
     "CRW/RT/Web"
 GO
-    for f in "${@:2}"; do
+    for f in $GoPrograms; do
         echo '    "'"CRW/Programs/$(ProgramLevel "$f")/$(ProgramName "$f")"'"'
     done
     cat <<GO
@@ -67,7 +80,7 @@ func main() {
             Name: "$(ProgramName "$f")",
         },
 GO
-    for f in "${@:2}"; do
+    for f in $GoPrograms; do
         echo "        CRW$(ProgramLevel "$f")$(ProgramName "$f").Program,"
     done
     cat <<GO
