@@ -24,7 +24,6 @@ module CRW.C.Parse
 
     -- * Views
   , view
-  , viewBody
 
     -- * Statements
   , statement
@@ -37,7 +36,7 @@ module CRW.C.Parse
   ) where
 
 import CRW.C.Lex (Lexeme (..))
-import CRW.C.Syntax (Expression (..), Level (..), Program (..), Statement (..), ViewBody (..))
+import CRW.C.Syntax (AuthorizationPhase (..), DisplayPhase (..), Expression (..), Level (..), Program (..), Statement (..))
 import Data.Functor.Foldable (Mu, embed)
 import Data.Text (Text)
 
@@ -60,11 +59,21 @@ view = do
                     , UserLevel <$ lexeme UserKeyword
                     ]
   name <- identifier
-  body <- viewBody
-  pure $ View level name body
+  authorizationPhase' <- authorizationPhase
+  displayPhase' <- displayPhase
+  pure $ View level name authorizationPhase' displayPhase'
 
-viewBody :: Parser (ViewBody (Mu Expression))
-viewBody = ViewBody <$> P.many statement
+authorizationPhase :: Parser (AuthorizationPhase (Mu Expression))
+authorizationPhase = do
+  _ <- lexeme AuthorizationPhaseKeyword
+  statements <- P.many statement
+  pure $ AuthorizationPhase statements
+
+displayPhase :: Parser (DisplayPhase (Mu Expression))
+displayPhase = do
+  _ <- lexeme DisplayPhaseKeyword
+  statements <- P.many statement
+  pure $ DisplayPhase statements
 
 
 

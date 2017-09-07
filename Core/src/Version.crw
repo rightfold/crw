@@ -17,6 +17,10 @@
 
 VIEW SYSTEM Version
 
-DISPLAY "Version", "0.0.0"
+AUTHORIZATION-PHASE
 
-FLUSH
+DISPLAY-PHASE
+
+  DISPLAY "Version", "0.0.0"
+
+  FLUSH

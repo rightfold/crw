@@ -21,9 +21,8 @@ module CRW.C.Syntax
   ( -- * Programs
     Program (..)
   , Level (..)
-
-    -- * Views
-  , ViewBody (..)
+  , AuthorizationPhase (..)
+  , DisplayPhase (..)
 
     -- * Statements
   , Statement (..)
@@ -44,17 +43,19 @@ import Text.Show.Deriving (deriveShow1)
 
 
 data Program e
-  = View Level Text (ViewBody e)
+  = View Level Text (AuthorizationPhase e) (DisplayPhase e)
   | Action Void
   deriving (Eq, Functor, Foldable, Traversable, Show, Read)
 
 data Level = SystemLevel | ApplicationLevel | UserLevel
   deriving (Eq, Show, Read)
 
-
+newtype AuthorizationPhase e =
+  AuthorizationPhase [Statement e]
+  deriving (Eq, Functor, Foldable, Traversable, Show, Read)
 
-newtype ViewBody e =
-  ViewBody [Statement e]
+newtype DisplayPhase e =
+  DisplayPhase [Statement e]
   deriving (Eq, Functor, Foldable, Traversable, Show, Read)
 
 

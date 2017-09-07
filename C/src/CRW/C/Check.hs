@@ -30,7 +30,7 @@ module CRW.C.Check
   , checkExpression
   ) where
 
-import CRW.C.Syntax (Expression (..), Program (..), Statement (..), Type (..), ViewBody (..))
+import CRW.C.Syntax (AuthorizationPhase (..), DisplayPhase (..), Expression (..), Program (..), Statement (..), Type (..))
 import Control.Category ((>>>))
 import Control.Comonad.Cofree (Cofree (..))
 import Control.Monad ((>=>))
@@ -59,8 +59,10 @@ runCheckT (CheckT a) = runExceptT a
 
 
 checkProgram :: Program (Mu Expression) -> Check (Program (Cofree Expression Type))
-checkProgram (View level name (ViewBody body)) =
-  View level name . ViewBody <$> traverse checkStatement body
+checkProgram (View level name (AuthorizationPhase authorizationPhase) (DisplayPhase displayPhase)) =
+  View level name
+  <$> (AuthorizationPhase <$> traverse checkStatement authorizationPhase)
+  <*> (DisplayPhase <$> traverse checkStatement displayPhase)
 checkProgram (Action void) = absurd void
 
 checkStatement :: Statement (Mu Expression) -> Check (Statement (Cofree Expression Type))

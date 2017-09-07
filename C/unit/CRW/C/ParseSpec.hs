@@ -23,7 +23,7 @@ import CRW.C.Parse
 import Test.Hspec
 
 import CRW.C.Lex (lexeme, space)
-import CRW.C.Syntax (Expression (..), Level (..), Program (..), Statement (..), ViewBody (..))
+import CRW.C.Syntax (AuthorizationPhase (..), DisplayPhase (..), Expression (..), Level (..), Program (..), Statement (..))
 import Data.Functor.Foldable (embed)
 
 import qualified Data.Text.IO as Text.IO
@@ -42,9 +42,10 @@ spec =
         expected = Right $
           View SystemLevel
                "Version"
-               (ViewBody [ DisplayStatement [ embed . TextLiteralExpression $ "Version"
-                                            , embed . TextLiteralExpression $ "0.0.0"
-                                            ]
-                         , FlushStatement
-                         ])
+               (AuthorizationPhase [])
+               (DisplayPhase [ DisplayStatement [ embed . TextLiteralExpression $ "Version"
+                                                , embed . TextLiteralExpression $ "0.0.0"
+                                                ]
+                             , FlushStatement
+                             ])
       result `shouldBe` expected

@@ -44,7 +44,9 @@ data Lexeme
   = CommaPunc
 
   | ApplicationKeyword
+  | AuthorizationPhaseKeyword
   | DisplayKeyword
+  | DisplayPhaseKeyword
   | FlushKeyword
   | SystemKeyword
   | UserKeyword
@@ -68,14 +70,16 @@ keywordOrIdentifier = spaced $ do
   name <- (Text.pack .) . (:) <$> head <*> tail
   pure $ case name of
     "APPLICATION" -> ApplicationKeyword
+    "AUTHORIZATION-PHASE" -> AuthorizationPhaseKeyword
     "DISPLAY" -> DisplayKeyword
+    "DISPLAY-PHASE" -> DisplayPhaseKeyword
     "FLUSH" -> FlushKeyword
     "SYSTEM" -> SystemKeyword
     "USER" -> UserKeyword
     "VIEW" -> ViewKeyword
     _ -> Identifier name
   where head = PC.oneOf $ ['A'..'Z'] ++ ['a'..'z']
-        tail = P.many . PC.oneOf $ ['A'..'Z'] ++ ['a'..'z']
+        tail = P.many . PC.oneOf $ ['A'..'Z'] ++ ['a'..'z'] ++ ['-']
 
 textLiteral :: Parser Lexeme
 textLiteral = spaced $ do
