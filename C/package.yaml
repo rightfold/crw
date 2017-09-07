@@ -21,6 +21,7 @@ default-extensions:
   - MonoLocalBinds
   - MultiParamTypeClasses
   - OverloadedStrings
+  - ParallelListComp
   - RankNTypes
   - ScopedTypeVariables
   - StandaloneDeriving
@@ -28,6 +29,7 @@ default-extensions:
 
 dependencies:
   - base == 4.9.1.0
+  - bytestring == 0.10.8.1
   - deriving-compat == 0.3.6
   - free == 4.12.4
   - parsec == 3.1.11

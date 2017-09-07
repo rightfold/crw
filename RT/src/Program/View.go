@@ -22,7 +22,8 @@ import (
 )
 
 type View struct {
-	Execute func(display.Display) error
+	AuthorizationPhase func(display.Display) error
+	DisplayPhase       func(display.Display) error
 }
 
 func (*View) isProgram() {}

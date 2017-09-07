@@ -19,5 +19,23 @@ module Main
   ( main
   ) where
 
+import CRW.C.Check (checkProgram, runCheck)
+import CRW.C.Generate.Go (codegenProgram)
+import System.Environment (getArgs)
+import System.IO (stdout)
+
+import qualified CRW.C.Lex as Lex
+import qualified CRW.C.Parse as Parse
+import qualified Data.ByteString.Builder as Builder
+import qualified Data.Text.IO as Text.IO
+import qualified Text.Parsec as P
+
 main :: IO ()
-main = pure ()
+main = do
+  [filename] <- getArgs
+  source <- Text.IO.readFile filename
+  let Right lexemes = P.parse (Lex.space *> P.many Lex.lexeme <* P.eof) "" source
+      Right program = P.parse (Parse.program <* P.eof) "" lexemes
+      Right program' = runCheck $ checkProgram program
+      goProgram = codegenProgram program'
+  Builder.hPutBuilder stdout goProgram

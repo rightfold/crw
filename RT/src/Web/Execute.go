@@ -54,7 +54,7 @@ func (e *Execute) executeProgram(res http.ResponseWriter, req *http.Request, p P
 
 func (e *Execute) executeView(res http.ResponseWriter, req *http.Request, p *Program.View) error {
 	display := e.getDisplay(res)
-	err := p.Execute(display)
+	err := p.DisplayPhase(display)
 	if err != nil {
 		return err
 	}
